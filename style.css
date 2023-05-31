@@ -54,3 +54,8 @@
 .rest-details{
    text-align: center;
 }
+
+.filter-btn{
+    width: 100px;
+    padding: 10px;
+}
