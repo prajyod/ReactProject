@@ -1,7 +1,7 @@
 import Search from "./Search";
 import  REST_DATA  from "../utils/data";
 import { CDN_URL } from "../utils/constants";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const RestauranCard = (props) => {
   const { restaurantData } = props;
@@ -20,7 +20,19 @@ const RestauranCard = (props) => {
 
 
 const Body = () => {
-  const [restData, setRestData] = useState(REST_DATA);
+  const [restData, setRestData] = useState([]);
+
+  useEffect(()=>{fetchData()},[]);
+  
+  const fetchData = async () => {
+    const fetchData = await fetch("https://www.swiggy.com/dapi/restaurants/list/v5?lat=17.4358411&lng=78.3467857&page_type=DESKTOP_WEB_LISTING");
+    const fetchRestData = await fetchData.json();
+    setRestData(fetchRestData.data.cards[2].data.data.cards);
+  };
+
+  if(restData.length === 0){
+    return <h1>Loading....</h1>
+  }
 
   return (
     <div className="body">
