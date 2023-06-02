@@ -1,11 +1,12 @@
 import Search from "./Search";
-import  REST_DATA  from "../utils/data";
-import { CDN_URL } from "../utils/constants";
+import { CDN_URL, SWIGGY_URL } from "../utils/constants";
 import { useState, useEffect } from "react";
+import Shimmer from "./Shimmer";
+import { Link } from "react-router-dom";
 
 const RestauranCard = (props) => {
   const { restaurantData } = props;
-  const { name, cloudinaryImageId, cuisines, avgRating, costForTwo } =
+  const { id,name, cloudinaryImageId, cuisines, avgRating, costForTwo } =
     restaurantData?.data;
   return (
     <div className="restaurant-card">
@@ -18,27 +19,51 @@ const RestauranCard = (props) => {
   );
 };
 
-
 const Body = () => {
   const [restData, setRestData] = useState([]);
-
-  useEffect(()=>{fetchData()},[]);
-  
+  const [filteredData, setFilteredData] = useState([]);
+  useEffect(() => {
+    fetchData();
+  }, []);
+  const fetchDataAsync = async() => {
+    const fetchData = await fetch(SWIGGY_URL);
+    return await fetchData.json();
+  }
   const fetchData = async () => {
-    const fetchData = await fetch("https://www.swiggy.com/dapi/restaurants/list/v5?lat=17.4358411&lng=78.3467857&page_type=DESKTOP_WEB_LISTING");
-    const fetchRestData = await fetchData.json();
+    const fetchRestData = await fetchDataAsync();
     setRestData(fetchRestData.data.cards[2].data.data.cards);
+    setFilteredData(fetchRestData.data.cards[2].data.data.cards);
   };
 
-  if(restData.length === 0){
-    return <h1>Loading....</h1>
-  }
+  const [searchText, setSearchText] = useState("");
 
-  return (
+  return restData.length === 0 ? (
+    <Shimmer />
+  ) : (
     <div className="body">
-      <Search />
+      <div className="filterSearch">
+        <div className="searchText">
+          <input
+            type="text"
+            value={searchText}
+            onChange={(val) => {
+              setSearchText(val.target.value);
+            }}
+          />
+        </div>
+        <div className="searchButton">
+          <button
+            onClick={async () => {
+              const data = restData.filter((r) => r.data.name.toLowerCase().includes(searchText.toLowerCase()));
 
-      <div>
+              setFilteredData(data);
+            }}
+          >
+            Search
+          </button>
+        </div>
+      </div>
+      {/* <div>
         <button
           className="filter-btn"
           onClick={() => {
@@ -48,12 +73,12 @@ const Body = () => {
         >
           Filter
         </button>
+      </div> */}
+      <div className="restaurant-container"> 
+        {filteredData.map((item) => (
+          <Link to={"/restaurant/"+item.data.id} key={item.data.id} ><RestauranCard restaurantData={item} /> </Link>//we are mapping to the link component so key should be on link.
+        ))}
       </div>
-      <div className="restaurant-container">
-      {restData.map((item) => (
-        <RestauranCard key={item.data.id} restaurantData={item} />
-      ))}
-    </div>
     </div>
   );
 };
