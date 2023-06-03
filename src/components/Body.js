@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 const RestauranCard = (props) => {
   const { restaurantData } = props;
-  const { id,name, cloudinaryImageId, cuisines, avgRating, costForTwo } =
+  const { name, cloudinaryImageId, cuisines, avgRating, costForTwo } =
     restaurantData?.data;
   return (
     <div className="restaurant-card">
