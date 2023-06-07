@@ -1,10 +1,11 @@
 import { useRouteError } from "react-router-dom";
 const Error = () => {
-    const {status,statusText} = useRouteError();
+    const error = useRouteError();
+    console.log(error)
     return (
         <div className="Error">
-            <h1>{status}</h1>
-            <h2>{statusText}</h2>
+            <h1>{error.statusText || error.messag}</h1>
+            <h2>{error.message}</h2>
         </div>
     );
 }

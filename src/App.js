@@ -1,4 +1,4 @@
-import React from "react";
+import React,{lazy,Suspense, useState} from "react";
 import ReactDOM from "react-dom/client";
 import Header from "./components/Header";
 import Body from "./components/Body";
@@ -10,13 +10,32 @@ import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import Error from "./components/Error";
 import ResturantMenu from "./components/RestaurantMenu";
 import Profile from "./components/ProfileClass";
+import Shimmer from "./components/Shimmer";
+import UserContext from "./utils/UserContext";
+
+const Instamart = lazy( () => import("./components/Instamart"));
+
 
 const AppLayout = () => {
+  const [user,setUser] = useState({
+    username:"new user",
+    email:"new email"
+  });
+
   return (
     <>
-      <Header />
+    <UserContext.Provider value={
+      {
+        user:user,
+        setUser:setUser
+      }
+    }>
+
+    <Header />
       <Outlet />
-      <Footer />
+    </UserContext.Provider>
+
+    <Footer />
     </>
   );
 };
@@ -50,6 +69,10 @@ const routerDefinition = createBrowserRouter([
       {
         path: "/restaurant/:id",
         element: <ResturantMenu />,
+      },
+      {
+        path:"/instamart",
+        element:<Suspense fallback={<Shimmer/>}><Instamart/></Suspense>
       }
     ],
   },

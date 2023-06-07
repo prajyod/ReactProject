@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import Profile from "./ProfileClass";
 import ProfileFunctionalComponent from "./Profile";
 import React from "react";
+import UserContext from "../utils/UserContext";
 
 class About extends React.Component {
   constructor(props) {
@@ -14,6 +15,9 @@ class About extends React.Component {
   }
 
   render() {
+    <UserContext.Consumer>
+      { (value) => console.log(value)};
+    </UserContext.Consumer>
     console.log("parent render");
     return (
       <div className="about">
