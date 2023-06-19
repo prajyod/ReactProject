@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import useOnline from "../utils/useOnline";
 import UserContext from "../utils/UserContext";
 
-const RestauranCard = (props) => {
+export const RestauranCard = (props) => {
   const { restaurantData } = props;
   const { name, cloudinaryImageId, cuisines, avgRating, costForTwo } =
     restaurantData?.data;
